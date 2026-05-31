@@ -1,19 +1,24 @@
 name: .NET CI
+
 on:
   push:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
+
 jobs:
   build:
     runs-on: windows-latest
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 10.0.x
+
     - name: Cache NuGet packages
       uses: actions/cache@v4
       with:
@@ -21,12 +26,15 @@ jobs:
         key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
         restore-keys: |
           ${{ runner.os }}-nuget-
+
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore CybersecurityBotWPF/CybersecurityBotWPF.csproj
+
     - name: Build
-      run: dotnet build --no-restore --configuration Release
+      run: dotnet build CybersecurityBotWPF/CybersecurityBotWPF.csproj --no-restore --configuration Release
+
     - name: Upload Build Artifacts
       uses: actions/upload-artifact@v4
       with:
         name: build
-        path: bin/Release/net10.0-windows
+        path: CybersecurityBotWPF/bin/Release/net10.0-windows
